@@ -1,0 +1,52 @@
+Vagrant.configure("2") do |config|
+  nodes = {
+    "control"  => "192.168.56.10",
+    "node1" => "192.168.56.11",
+    "minio" => "192.168.56.12"
+  }
+
+  # Define a range of static IPs for the Bridged network (must match your router's subnet)
+  # Example: If your router is 192.168.1.1, use 192.168.1.50-60
+  bridged_ips = {
+    "control"  => "192.168.1.50",
+    "node1" => "192.168.1.51",
+    "minio" => "192.168.1.52"
+  }
+
+  nodes.each_with_index do |(name, host_only_ip), index|
+    config.vm.define name do |node|
+      node.vm.box = "ubuntu/jammy64"
+      node.vm.hostname = name
+
+      # Adapter 2: Private network (Host-Only) - KEEP STATIC
+      node.vm.network "private_network", 
+        ip: host_only_ip,
+        ip: host_only_ip,
+        virtualbox__promiscuous_mode: "allow-all"
+
+      # Adapter 3: Bridged network - NOW STATIC
+      # Replace 'enp0s3' with the actual name of your bridged interface if known, 
+      # or let Vagrant auto-detect (usually works fine with public_network)
+      # node.vm.network "public_network", ip: bridged_ips[name], 
+      #                                   bridge: "en0: Wi-Fi (AirPort)" # CHANGE THIS to your actual laptop interface name!
+      node.vm.network "public_network", ip: bridged_ips[name]
+      #                                   bridge: "en0: Wi-Fi (AirPort)" # CHANGE THIS to your actual laptop interface name!                                  
+
+      # VirtualBox settings
+      node.vm.provider "virtualbox" do |vb|
+        if name == "control"
+          vb.memory = 2048
+          vb.cpus = 2
+        elsif name == "minio"
+          vb.memory = 2048
+          vb.cpus = 2
+        else
+          vb.memory = 1536
+          vb.cpus = 1
+        end
+      end
+
+      node.vm.synced_folder ".", "/vagrant", disabled: true
+    end
+  end
+end

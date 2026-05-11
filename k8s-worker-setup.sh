@@ -2,6 +2,9 @@
 # setup-worker-node.sh
 # Run this script on worker nodes (192.168.56.11+)
 # Pass the join command as an argument or set it manually
+# Example usage:
+#   sudo bash k8s-worker-setup.sh 192.168.56.11 "kubeadm join 192.168.56.10:6443 --token abcdef.0123456789abcdef --discovery-token-ca-cert-hash sha256:1234567890abcdef..."
+
 
 set -e
 
