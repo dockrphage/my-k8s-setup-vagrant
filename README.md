@@ -1,8 +1,11 @@
 
 
-# ✅ **README.md **
+# ✅ **README.md ** 
 
-# Foreword: while this was originally made for a two VM k8s+ one additional vm(minIO), you can leave out the minio configuration and use it as a kubernetes setup adding additional worker nodes. Can spin off a cluster in a few mins. 
+Also refer RUNBOOK.md
+
+ Foreword: while this was originally made for a two VM k8s+ one additional vm(minIO), you can leave out the minio configuration and use it as a kubernetes setup adding additional worker nodes. Can spin off a cluster in a few mins. 
+
 
 ---
 
