@@ -119,6 +119,13 @@ EOF
     sudo apt-mark hold kubelet kubeadm kubectl
     sudo swapoff -a
     sudo sed -i 's/\/swap/#\/swap/' /etc/fstab
+   
+    # Install crictl
+    CRICTL_VERSION=$(curl -s https://api.github.com/repos/kubernetes-sigs/cri-tools/releases/latest | jq -r '.tag_name')
+    CRICTL_VERSION=${CRICTL_VERSION#v}
+    wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v${CRICTL_VERSION}/crictl-v${CRICTL_VERSION}-linux-${PLATFORM}.tar.gz
+    sudo tar zxvf crictl-v${CRICTL_VERSION}-linux-${PLATFORM}.tar.gz -C /usr/local/bin
+    rm -f crictl-v${CRICTL_VERSION}-linux-${PLATFORM}.tar.gz
 
     # Configure crictl
     sudo crictl config --set runtime-endpoint=unix:///run/containerd/containerd.sock
@@ -174,4 +181,3 @@ echo "  sudo vi $HOME/.kube/config  (on this worker node)"
 echo ""
 echo "Waiting for node to be ready..."
 sleep 10
-

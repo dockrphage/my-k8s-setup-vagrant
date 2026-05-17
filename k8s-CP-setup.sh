@@ -114,6 +114,12 @@ EOF
     sudo apt-mark hold kubelet kubeadm kubectl
     sudo swapoff -a
     sudo sed -i 's/\/swap/#\/swap/' /etc/fstab
+    # Install crictl
+    CRICTL_VERSION=$(curl -s https://api.github.com/repos/kubernetes-sigs/cri-tools/releases/latest | jq -r '.tag_name')
+    CRICTL_VERSION=${CRICTL_VERSION#v}
+    wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v${CRICTL_VERSION}/crictl-v${CRICTL_VERSION}-linux-${PLATFORM}.tar.gz
+    sudo tar zxvf crictl-v${CRICTL_VERSION}-linux-${PLATFORM}.tar.gz -C /usr/local/bin
+    rm -f crictl-v${CRICTL_VERSION}-linux-${PLATFORM}.tar.gz
 
 
     # Configure crictl
@@ -216,4 +222,3 @@ echo "Run the following on your worker node(s):"
 echo ""
 kubeadm token create --print-join-command
 echo ""
-
